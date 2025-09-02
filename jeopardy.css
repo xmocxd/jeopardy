@@ -15,6 +15,10 @@
   }
 }
 
+.hidden {
+  display: none
+}
+
 .progress {
   animation: rotation 2s infinite linear;
   font-size: 80px;
@@ -39,7 +43,7 @@
   background-color: #74119c;
 }
 
-#board {
+.play-area {
   margin: 20px;
   padding: 20px;
   text-align: center;

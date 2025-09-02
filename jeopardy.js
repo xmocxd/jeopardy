@@ -57,7 +57,6 @@ To review, the format for the URL is the following:
 let categories = [];
 const NUM_CATEGORIES = 6;
 
-
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
@@ -120,7 +119,8 @@ async function getCategory(catId) {
  */
 
 async function fillTable() {
-    
+   document.getElementById('board').innerHTML = '';
+   document.getElementById('board').innerHTML = JSON.stringify(categories);
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -139,12 +139,18 @@ function handleClick(evt) {
  */
 
 function showLoadingView() {
-
+   document.getElementById('board').innerHTML = '';
+   document.getElementById('start-game').innerHTML = 'Loading...';
+   document.getElementById('start-game').classList.add('loading');
+   document.getElementById('loading-icon').classList.remove('hidden');
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
+   document.getElementById('start-game').innerHTML = 'Restart';
+   document.getElementById('start-game').classList.remove('loading');
+   document.getElementById('loading-icon').classList.add('hidden');
 }
 
 /** Start game:
@@ -171,5 +177,10 @@ async function setupAndStart() {
 // TODO/
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupAndStart();
+    document.getElementById('start-game').addEventListener('click', async () => {
+        showLoadingView();
+        await setupAndStart();
+        hideLoadingView();
+        fillTable();
+    });
 });
