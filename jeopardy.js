@@ -66,14 +66,14 @@ const NUM_CATEGORIES = 6;
 async function getCategoryIds() {
     const response = await axios.get('https://projects.springboard.com/jeopardy/api/categories?count=20');
     const categoryIds = new Set();
-    console.log(response);
+    // console.log(response);
 
     while (categoryIds.size < NUM_CATEGORIES && categoryIds.size < response.data.length) {
         let r = Math.floor(Math.random() * response.data.length);
         categoryIds.add(response.data[r].id);
     }
 
-    console.log(categoryIds);
+    // console.log(categoryIds);
     return categoryIds;
 }
 
@@ -89,27 +89,27 @@ async function getCategoryIds() {
  *   ]
  */
 
-// async function getCategory(catId) {
-//     const response = await axios.get('https://rithm-jeopardy.herokuapp.com/api/category?id=' + catId);
-//     const clues = [];
-//     const categoryData = {};
+async function getCategory(catId) {
+    const response = await axios.get('https://rithm-jeopardy.herokuapp.com/api/category?id=' + catId);
+    const clues = [];
+    const categoryData = {};
 
-//     console.log(response);
+    // console.log(response);
 
-//     categoryData.title = response.data.title;
-//     categoryData.clues = response.data.clues.map((clue) => {
-//         return {
-//             answer: clue.answer,
-//             question: clue.question,
-//             value: clue.value,
-//             showing: null
-//         };
-//     });
+    categoryData.title = response.data.title;
+    categoryData.clues = response.data.clues.map((clue) => {
+        return {
+            answer: clue.answer,
+            question: clue.question,
+            value: clue.value,
+            showing: null
+        };
+    });
 
-//     console.log(categoryData);
+    // console.log(categoryData);
 
-//     return categoryData;
-// }
+    return categoryData;
+}
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
  *
@@ -120,6 +120,7 @@ async function getCategoryIds() {
  */
 
 async function fillTable() {
+    
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -154,6 +155,11 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+    const _categories = await getCategoryIds();
+    for (c of _categories) {
+        categories.push(await getCategory(c));
+    }
+    console.log(categories);
 }
 
 /** On click of start / restart button, set up game. */
@@ -165,6 +171,5 @@ async function setupAndStart() {
 // TODO/
 
 document.addEventListener('DOMContentLoaded', () => {
-    // getCategory(2);
-    getCategoryIds();
+    setupAndStart();
 });

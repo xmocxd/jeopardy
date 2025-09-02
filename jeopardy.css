@@ -5,3 +5,42 @@
   #8d2ab5
   #74119c
 */
+
+@keyframes rotation {
+  from {
+      transform: rotate(0deg);
+  }
+  to {
+      transform: rotate(360deg);
+  }
+}
+
+.progress {
+  animation: rotation 2s infinite linear;
+  font-size: 80px;
+}
+
+.top-panel {
+  text-align: center;
+  margin: 20px;
+}
+
+.top-panel button {
+  background-color: #8d2ab5;
+  font-size: 18px;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.top-panel button.loading {
+  background-color: #74119c;
+}
+
+#board {
+  margin: 20px;
+  padding: 20px;
+  text-align: center;
+}
