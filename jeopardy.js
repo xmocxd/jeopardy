@@ -161,6 +161,7 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+    categories = []
     const _categories = await getCategoryIds();
     for (c of _categories) {
         categories.push(await getCategory(c));
