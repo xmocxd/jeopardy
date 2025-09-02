@@ -126,19 +126,24 @@ async function fillTable() {
     for (category of categories) {
         html += '<td>' + category.title + '</td>';
     }
-    html += '</tr></thead><tbody>';
+    html += '</tr></thead><tbody id="table-body"></tbody></table>';
+    document.getElementById('board').innerHTML = html;
+    let tbody = document.getElementById('table-body');
     
     for (row = 0; row < NUM_QUESTIONS_PER_CAT; row++) {
-        html += '<tr>';
+        let tr = tbody.appendChild(document.createElement('tr'));
+        c = 0;
         for (category of categories) {
-            html += '<td>' + category.clues[row].question + '</td>';
+            let td = document.createElement('td');
+            td.setAttribute('data-category', c);
+            td.setAttribute('data-clue', row);
+            td.innerHTML = '?';
+            td.addEventListener('click', handleClick);
+            tr.appendChild(td);
+            c++;
         }
-        html += '</tr>';
     }
     
-    html += '</tbody></table>';
-    
-    document.getElementById('board').innerHTML = html;
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -149,7 +154,23 @@ async function fillTable() {
 * - if currently "answer", ignore click
 * */
 
-function handleClick(evt) {
+function handleClick(e) {
+    const clue = categories[e.target.dataset.category]
+    .clues[e.target.dataset.clue];
+
+    // check state
+    switch (clue.showing) {
+        case 'question':
+            e.target.innerHTML = clue.answer;
+            clue.showing = 'answer';
+            break;
+        case 'answer':
+            break;
+        default: // null
+            e.target.innerHTML = clue.question;
+            clue.showing = 'question';
+    }
+
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
