@@ -48,3 +48,23 @@
   padding: 20px;
   text-align: center;
 }
+
+#board table {
+  border: white 2px solid;
+  margin: 0 auto;
+}
+
+#board td {
+  background-color: #060ce9;
+  padding: 10px;
+}
+
+#board tbody td {
+  width: 150px;
+  height: 150px;
+  cursor: pointer;
+}
+
+body {
+  background-color: #115ff4;
+}

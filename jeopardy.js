@@ -56,45 +56,46 @@ To review, the format for the URL is the following:
 
 let categories = [];
 const NUM_CATEGORIES = 6;
+const NUM_QUESTIONS_PER_CAT = 5;
 
 /** Get NUM_CATEGORIES random category from API.
- *
- * Returns array of category ids
- */
+*
+* Returns array of category ids
+*/
 
 async function getCategoryIds() {
     const response = await axios.get('https://projects.springboard.com/jeopardy/api/categories?count=20');
     const categoryIds = new Set();
     // console.log(response);
-
+    
     while (categoryIds.size < NUM_CATEGORIES && categoryIds.size < response.data.length) {
         let r = Math.floor(Math.random() * response.data.length);
         categoryIds.add(response.data[r].id);
     }
-
+    
     // console.log(categoryIds);
     return categoryIds;
 }
 
 /** Return object with data about a category:
- *
- *  Returns { title: "Math", clues: clue-array }
- *
- * Where clue-array is:
- *   [
- *      {question: "Hamlet Author", answer: "Shakespeare", showing: null},
- *      {question: "Bell Jar Author", answer: "Plath", showing: null},
- *      ...
- *   ]
- */
+*
+*  Returns { title: "Math", clues: clue-array }
+*
+* Where clue-array is:
+*   [
+*      {question: "Hamlet Author", answer: "Shakespeare", showing: null},
+*      {question: "Bell Jar Author", answer: "Plath", showing: null},
+*      ...
+*   ]
+*/
 
 async function getCategory(catId) {
     const response = await axios.get('https://rithm-jeopardy.herokuapp.com/api/category?id=' + catId);
     const clues = [];
     const categoryData = {};
-
+    
     // console.log(response);
-
+    
     categoryData.title = response.data.title;
     categoryData.clues = response.data.clues.map((clue) => {
         return {
@@ -104,61 +105,78 @@ async function getCategory(catId) {
             showing: null
         };
     });
-
+    
     // console.log(categoryData);
-
+    
     return categoryData;
 }
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
- *
- * - The <thead> should be filled w/a <tr>, and a <td> for each category
- * - The <tbody> should be filled w/NUM_QUESTIONS_PER_CAT <tr>s,
- *   each with a question for each category in a <td>
- *   (initally, just show a "?" where the question/answer would go.)
- */
+*
+* - The <thead> should be filled w/a <tr>, and a <td> for each category
+* - The <tbody> should be filled w/NUM_QUESTIONS_PER_CAT <tr>s,
+*   each with a question for each category in a <td>
+*   (initally, just show a "?" where the question/answer would go.)
+*/
 
 async function fillTable() {
-   document.getElementById('board').innerHTML = '';
-   document.getElementById('board').innerHTML = JSON.stringify(categories);
+    document.getElementById('board').innerHTML = '';
+    let html = '<table><thead><tr>';
+    
+    for (category of categories) {
+        html += '<td>' + category.title + '</td>';
+    }
+    html += '</tr></thead><tbody>';
+    
+    for (row = 0; row < NUM_QUESTIONS_PER_CAT; row++) {
+        html += '<tr>';
+        for (category of categories) {
+            html += '<td>' + category.clues[row].question + '</td>';
+        }
+        html += '</tr>';
+    }
+    
+    html += '</tbody></table>';
+    
+    document.getElementById('board').innerHTML = html;
 }
 
 /** Handle clicking on a clue: show the question or answer.
- *
- * Uses .showing property on clue to determine what to show:
- * - if currently null, show question & set .showing to "question"
- * - if currently "question", show answer & set .showing to "answer"
- * - if currently "answer", ignore click
- * */
+*
+* Uses .showing property on clue to determine what to show:
+* - if currently null, show question & set .showing to "question"
+* - if currently "question", show answer & set .showing to "answer"
+* - if currently "answer", ignore click
+* */
 
 function handleClick(evt) {
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
- * and update the button used to fetch data.
- */
+* and update the button used to fetch data.
+*/
 
 function showLoadingView() {
-   document.getElementById('board').innerHTML = '';
-   document.getElementById('start-game').innerHTML = 'Loading...';
-   document.getElementById('start-game').classList.add('loading');
-   document.getElementById('loading-icon').classList.remove('hidden');
+    document.getElementById('board').innerHTML = '';
+    document.getElementById('start-game').innerHTML = 'Loading...';
+    document.getElementById('start-game').classList.add('loading');
+    document.getElementById('loading-icon').classList.remove('hidden');
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
-   document.getElementById('start-game').innerHTML = 'Restart';
-   document.getElementById('start-game').classList.remove('loading');
-   document.getElementById('loading-icon').classList.add('hidden');
+    document.getElementById('start-game').innerHTML = 'Restart';
+    document.getElementById('start-game').classList.remove('loading');
+    document.getElementById('loading-icon').classList.add('hidden');
 }
 
 /** Start game:
- *
- * - get random category Ids
- * - get data for each category
- * - create HTML table
- * */
+*
+* - get random category Ids
+* - get data for each category
+* - create HTML table
+* */
 
 async function setupAndStart() {
     categories = []
